@@ -1,0 +1,96 @@
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Database connection
+    $host = "localhost";
+    $user = "root";
+    $password = ""; // Change if necessary
+    $dbname = "ColbensonCarpentry";
+
+    $conn = new mysqli($host, $user, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+die("Connection failed: " . $conn->connect_error);
+}
+
+// Get form data
+$name = $conn->real_escape_string($_POST['name']);
+$email = $conn->real_escape_string($_POST['email']);
+$message = $conn->real_escape_string($_POST['message']);
+
+// Insert into database
+$sql = "INSERT INTO questions (name, email, message) VALUES ('$name', '$email', '$message')";
+
+if ($conn->query($sql) === TRUE) {
+$successMessage = "Your question has been submitted successfully!";
+} else {
+$errorMessage = "Error: " . $sql . "<br>" . $conn->error;
+}
+
+// Close the connection
+$conn->close();
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Colbenson Carpentry</title>
+    <link rel="stylesheet" href="css/contact.css">
+</head>
+<body>
+<header>
+    <div class="logo">
+        <h1>Colbenson Carpentry</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="portfolio.html">Portfolio</a></li>
+            <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section id="contact" class="section">
+    <div class="container">
+        <h2>Contact Us</h2>
+
+        <div class="contact-info">
+            <p>If you have any questions or would like to discuss a project, feel free to reach out to us:</p>
+            <p><strong>Phone:</strong> 507-458-8317</p>
+            <p><strong>Email:</strong> colbyinc@acegroup.cc</p>
+            <p><strong>Facebook:</strong> <a href="https://www.facebook.com/p/Colby-Cabinetry-100057409961512/">Colby Cabinetry</a></p>
+        </div>
+
+        <h3>Send Us a Message</h3>
+
+        <?php if (!empty($successMessage)) : ?>
+        <p style="color: green;"><?php echo $successMessage; ?></p>
+        <?php endif; ?>
+
+        <?php if (!empty($errorMessage)) : ?>
+        <p style="color: red;"><?php echo $errorMessage; ?></p>
+        <?php endif; ?>
+
+        <form action="" method="POST" id="questionForm">
+            <label for="name">Your Name:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="email">Your Email:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="message">Your Question:</label><br>
+            <textarea id="message" name="message" rows="5" required></textarea><br><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 Colbenson Carpentry. All Rights Reserved.</p>
+</footer>
+</body>
+</html>
